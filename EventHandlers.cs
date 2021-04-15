@@ -51,82 +51,85 @@ namespace Lootorial
 
         public void OnSendingRemoteAdminCommand(SendingRemoteAdminCommandEventArgs ev)
         {
-            if (ev.Sender.CheckPermission("lootorial.main"))
+            if (ev.Name == "loot" || ev.Name == "lt" || ev.Name == "lootorial")
             {
-                ev.IsAllowed = false;
-
-                if (ev.Arguments.ElementAt(0) == null)
+                if (ev.Sender.CheckPermission("lootorial.main"))
                 {
-                    ev.ReplyMessage = "You need to write an argument";
-                    ev.Success = true;
-                    return;
-                }
+                    ev.IsAllowed = false;
 
-                switch (ev.Arguments.ElementAt(0))
-                {
-                    case "point":
-                        {
-                            if (ev.Sender.CheckPermission("lootorial.point"))
-                            {
-                                var scp049Component = ev.Sender.GameObject.GetComponent<Scp049_2PlayerScript>();
-                                var froward = scp049Component.plyCam.transform.forward;
-                                var rotation = new Vector3(-froward.x, froward.y, -froward.z);
-                                var position = ev.Sender.Position + (Vector3.up * 0.1f);
-                                var room = ev.Sender.CurrentRoom;
-                                var p2 = room.Transform.InverseTransformPoint(position);
-                                var r2 = room.Transform.InverseTransformDirection(rotation);
-                                Log.Info($"Room: {ev.Sender.CurrentRoom.Name} Pos:{p2} Rotation:{r2}");
-                                ev.ReplyMessage = $"Room: {ev.Sender.CurrentRoom.Name} Pos:{p2} Rotation:{r2}";
-                                ev.Success = true;
-                                return;
-                            }
-                            else
-                            {
-                                ev.ReplyMessage = "You don't have the requeried permissions";
-                                ev.Success = true;
-                                return;
-                            }
-                        }
-                    case "spawn":
-                        {
-                            if (ev.Sender.CheckPermission("lootorial.spawn"))
-                            {
-                                if (ev.Arguments.ElementAt(1) == null)
-                                {
-                                    ev.ReplyMessage = "You need to enter the name";
-                                    ev.Success = true;
-                                }
+                    if (ev.Arguments.ElementAt(0) == null)
+                    {
+                        ev.ReplyMessage = "You need to write an argument";
+                        ev.Success = true;
+                        return;
+                    }
 
-                                if (RoleType.TryParse<RoleType>(ev.Arguments.ElementAt(2), out var role) == false)
+                    switch (ev.Arguments.ElementAt(0))
+                    {
+                        case "point":
+                            {
+                                if (ev.Sender.CheckPermission("lootorial.point"))
                                 {
-                                    ev.ReplyMessage = "You need to enter a valid RoleType";
+                                    var scp049Component = ev.Sender.GameObject.GetComponent<Scp049_2PlayerScript>();
+                                    var froward = scp049Component.plyCam.transform.forward;
+                                    var rotation = new Vector3(-froward.x, froward.y, -froward.z);
+                                    var position = ev.Sender.Position + (Vector3.up * 0.1f);
+                                    var room = ev.Sender.CurrentRoom;
+                                    var p2 = room.Transform.InverseTransformPoint(position);
+                                    var r2 = room.Transform.InverseTransformDirection(rotation);
+                                    Log.Info($"Room: {ev.Sender.CurrentRoom.Name} Pos:{p2} Rotation:{r2}");
+                                    ev.ReplyMessage = $"Room: {ev.Sender.CurrentRoom.Name} Pos:{p2} Rotation:{r2}";
                                     ev.Success = true;
+                                    return;
                                 }
-                                var npc = NPCS.Methods.CreateNPC(ev.Sender.Position, ev.Sender.Rotations, new UnityEngine.Vector3(1, 1, 1), role, ItemType.None, ev.Arguments.ElementAt(1));
-                                Timing.CallDelayed(0.5f, () =>
+                                else
                                 {
-                                    foreach (ItemType it in Lootorial.Instance.Config.DroppableItems)
+                                    ev.ReplyMessage = "You don't have the requeried permissions";
+                                    ev.Success = true;
+                                    return;
+                                }
+                            }
+                        case "spawn":
+                            {
+                                if (ev.Sender.CheckPermission("lootorial.spawn"))
+                                {
+                                    if (ev.Arguments.ElementAt(1) == null)
                                     {
-                                        npc.NPCPlayer.AddItem(it);
+                                        ev.ReplyMessage = "You need to enter the name";
+                                        ev.Success = true;
                                     }
-                                });
 
-                                return;
+                                    if (RoleType.TryParse<RoleType>(ev.Arguments.ElementAt(2), out var role) == false)
+                                    {
+                                        ev.ReplyMessage = "You need to enter a valid RoleType";
+                                        ev.Success = true;
+                                    }
+                                    var npc = NPCS.Methods.CreateNPC(ev.Sender.Position, ev.Sender.Rotations, new UnityEngine.Vector3(1, 1, 1), role, ItemType.None, ev.Arguments.ElementAt(1));
+                                    Timing.CallDelayed(0.5f, () =>
+                                    {
+                                        foreach (ItemType it in Lootorial.Instance.Config.DroppableItems)
+                                        {
+                                            npc.NPCPlayer.AddItem(it);
+                                        }
+                                    });
+
+                                    return;
+                                }
+                                else
+                                {
+                                    ev.ReplyMessage = "You don't have the requeried permissions";
+                                    ev.Success = true;
+                                    return;
+                                }
                             }
-                            else
-                            {
-                                ev.ReplyMessage = "You don't have the requeried permissions";
-                                ev.Success = true;
-                                return;
-                            }
-                        }
+                    }
                 }
-            }
-            else
-            {
-                ev.IsAllowed = false;
-                ev.ReplyMessage = "You don't have the requeried permissions";
-                ev.Success = true;
+                else
+                {
+                    ev.IsAllowed = false;
+                    ev.ReplyMessage = "You don't have the requeried permissions";
+                    ev.Success = true;
+                }
             }
         }
 
