@@ -10,7 +10,7 @@ namespace Lootorial
 {
     public class Lootorial : Plugin<PluginConfig>
     {
-        internal static Lootorial Instance { get; } = new Lootorial();
+        internal static Lootorial Instance { get; private set; }
         private Lootorial()
         {
 
@@ -34,7 +34,6 @@ namespace Lootorial
             try
             {
                 base.OnEnabled();
-
                 NpcPlugin = (NPCS.Plugin)Exiled.Loader.Loader.Plugins.FirstOrDefault(x => x.Name == "CustomNPCs");
 
                 if (NpcPlugin == null)
@@ -50,6 +49,7 @@ namespace Lootorial
                 }
 
                 RegisterEvents();
+                Instance = this;
             }
             catch (Exception e)
             {
@@ -61,6 +61,7 @@ namespace Lootorial
         {
             base.OnDisabled();
             UnregisterEvents();
+            Instance = null;
         }
 
         public void RegisterEvents()
