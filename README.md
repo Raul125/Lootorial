@@ -16,8 +16,8 @@ Commands:
   Description: It gives you your current position, rotation and room name. This is usefull for adding new pinhatas positions in the config.
 
 - `lt spawn`
-  Usage: lt spawn Name RoleType Health
-  Example: lt spawn Pinhata Tutorial 100
+  Usage: `lt spawn Name RoleType Health`
+  Example: `lt spawn Pinhata Tutorial 100`
   Description: With this command, you can spawn a pinhata in your current position.
 
 Default Config:
