@@ -16,7 +16,7 @@ namespace Lootorial
         public override string Author { get; } = "Raul125";
         public override string Name { get; } = "Lootorial";
         public override Version Version { get; } = new Version(1, 0, 0);
-        public override Version RequiredExiledVersion { get; } = new Version(2, 1, 8);
+        public override Version RequiredExiledVersion { get; } = new Version(2, 8, 0);
         public EventHandlers Handler;
         public static Lootorial Singleton;
 
@@ -66,6 +66,9 @@ namespace Lootorial
             ServerEv.SendingRemoteAdminCommand += Handler.OnSendingRemoteAdminCommand;
             PlayerEv.Dying += Handler.OnDying;
             MapEv.ExplodingGrenade += Handler.OnExploding;
+            PlayerEv.SpawningRagdoll += Handler.OnSpawningRagdoll;
+            PlayerEv.Shooting += Handler.OnShooting;
+            PlayerEv.Hurting += Handler.OnHurting;
         }
         public void UnregisterEvents()
         {
@@ -74,6 +77,9 @@ namespace Lootorial
             ServerEv.SendingRemoteAdminCommand -= Handler.OnSendingRemoteAdminCommand;
             PlayerEv.Dying -= Handler.OnDying;
             MapEv.ExplodingGrenade -= Handler.OnExploding;
+            PlayerEv.SpawningRagdoll -= Handler.OnSpawningRagdoll;
+            PlayerEv.Shooting -= Handler.OnShooting;
+            PlayerEv.Hurting -= Handler.OnHurting;
             Handler = null;
         }
 

@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Lootorial.Classes;
+using NPCS;
+using Exiled.API.Extensions;
 using Random = UnityEngine.Random;
 
 namespace Lootorial.Methods
@@ -19,15 +21,40 @@ namespace Lootorial.Methods
 
         public static NPCS.Npc CreatePinhata(PinhataPosition pin)
         {
+            if (Lootorial.Instance.Config.PinhatasPositions.PinhatasParsed.TryGetValue(pin, out GameObject value) && value != null)
+            {
+                return Player.Get(value).AsNPC();
+            }
+
             var room = Map.Rooms.FirstOrDefault(x => x.Name == pin.Room);
             var pos = room.Transform.TransformPoint(pin.Position);
             var dir = room.Transform.TransformDirection(pin.Direction);
-            var npc = NPCS.Methods.CreateNPC(pos, dir, new UnityEngine.Vector3(1, 1, 1), pin.Role, ItemType.None, pin.Name);
-            Lootorial.Instance.Handler.Pinhatas.Add(npc.gameObject);
+            var npc = NPCS.Methods.CreateNPC(pos, dir, pin.Scale, pin.Role, ItemType.None, pin.Name);
 
             Timing.CallDelayed(0.5f, () =>
             {
-                for (int i = 0; i < 9; i++)
+                npc.NPCPlayer.Health = pin.Health;
+                npc.NPCPlayer.MaxHealth = (int)pin.Health;
+                Lootorial.Instance.Config.PinhatasPositions.PinhatasParsed[pin] = npc.gameObject;
+                for (int i = 0; i < Lootorial.Instance.Config.MaxItemsPerPinhata + 1; i++)
+                {
+                    var item = Rand.Next(0, Lootorial.Instance.Config.DroppableItems.Count);
+                    npc.NPCPlayer.AddItem(Lootorial.Instance.Config.DroppableItems.ElementAt(item));
+                }
+            });
+
+            return npc;
+        }
+
+        public static NPCS.Npc SpawnPinhata(PinhataPosition pin)
+        {
+            var npc = NPCS.Methods.CreateNPC(pin.Position, pin.Direction, pin.Scale, pin.Role, ItemType.None, pin.Name);
+
+            Timing.CallDelayed(0.5f, () =>
+            {
+                npc.NPCPlayer.Health = pin.Health;
+                npc.NPCPlayer.MaxHealth = (int)pin.Health;
+                for (int i = 0; i < Lootorial.Instance.Config.MaxItemsPerPinhata + 1; i++)
                 {
                     var item = Rand.Next(0, Lootorial.Instance.Config.DroppableItems.Count);
                     npc.NPCPlayer.AddItem(Lootorial.Instance.Config.DroppableItems.ElementAt(item));
@@ -43,10 +70,9 @@ namespace Lootorial.Methods
             try
             {
                 pickup.Rb.transform.Translate(InitialPosVec3, Space.Self);
-                pickup.Rb.AddForce(dir * 17, ForceMode.Impulse);
+                pickup.Rb.AddForce(dir * Lootorial.Instance.Config.ThrowForce, ForceMode.Impulse);
                 Vector3 rand = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-100f, 1f)).normalized;
-                pickup.Rb.angularVelocity = rand.normalized * 20;
-                Log.Info(pickup.position);
+                pickup.Rb.angularVelocity = rand.normalized * Lootorial.Instance.Config.RandomSpinForce;
             }
             catch (Exception e)
             {
@@ -59,10 +85,17 @@ namespace Lootorial.Methods
             while (true)
             {
                 yield return Timing.WaitForSeconds(Lootorial.Instance.Config.SpawnRandomlyPinhatas);
-
                 var pinhata = Rand.Next(0, Lootorial.Instance.Config.PinhatasPositions.PinhatasParsed.Count);
 
-                CreatePinhata(Lootorial.Instance.Config.PinhatasPositions.PinhatasParsed.ElementAt(pinhata));
+                if (!Lootorial.Instance.Config.PinhatasPositions.PinhatasParsed.ElementAt(pinhata).Value)
+                {
+                    if (Rand.Next(100) < Lootorial.Instance.Config.SpawnChance)
+                    {
+                        var pin = Lootorial.Instance.Config.PinhatasPositions.PinhatasParsed.ElementAt(pinhata).Key;
+                        Map.Broadcast(10, Lootorial.Instance.Config.PinhataBroadcast.Replace("%room", pin.Room));
+                        CreatePinhata(pin);
+                    }
+                }
             }
         }
 

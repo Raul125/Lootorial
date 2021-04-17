@@ -49,8 +49,8 @@
     <Reference Include="0Harmony">
       <HintPath>..\..\refs\0Harmony.dll</HintPath>
     </Reference>
-    <Reference Include="0NPCS %284%29">
-      <HintPath>C:\Users\jorge\Downloads\0NPCS (4).dll</HintPath>
+    <Reference Include="0NPCS">
+      <HintPath>C:\Users\jorge\Downloads\virus para pikatu\0NPCS.dll</HintPath>
     </Reference>
     <Reference Include="Accessibility" />
     <Reference Include="AmplifyBloom">

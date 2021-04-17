@@ -15,10 +15,12 @@ namespace Lootorial.Classes
 
         public Vector3 Position;
 
-        public Vector3 Direction;
+        public Vector3 Scale;
+
+        public Vector2 Direction;
+
+        public float Health;
 
         public string Name;
-
-        public override string ToString() => $"{Room}:{Position.x}:{Position.y}:{Position.z}";
     }
 }
