@@ -10,21 +10,13 @@ namespace Lootorial
 {
     public class Lootorial : Plugin<PluginConfig>
     {
-        internal static Lootorial Instance { get; } = new Lootorial();
-        private Lootorial()
-        {
-
-        }
-
+        internal static Lootorial Instance { get; private set; }
         private NPCS.Plugin NpcPlugin;
-
         public override PluginPriority Priority { get; } = PluginPriority.Lowest;
-
         public override string Author { get; } = "Raul125";
         public override string Name { get; } = "Lootorial";
         public override Version Version { get; } = new Version(1, 0, 0);
         public override Version RequiredExiledVersion { get; } = new Version(2, 1, 8);
-
         public EventHandlers Handler;
         public static Lootorial Singleton;
 
@@ -34,7 +26,6 @@ namespace Lootorial
             try
             {
                 base.OnEnabled();
-
                 NpcPlugin = (NPCS.Plugin)Exiled.Loader.Loader.Plugins.FirstOrDefault(x => x.Name == "CustomNPCs");
 
                 if (NpcPlugin == null)
@@ -50,6 +41,7 @@ namespace Lootorial
                 }
 
                 RegisterEvents();
+                Instance = this;
             }
             catch (Exception e)
             {
@@ -61,6 +53,7 @@ namespace Lootorial
         {
             base.OnDisabled();
             UnregisterEvents();
+            Instance = null;
         }
 
         public void RegisterEvents()
