@@ -6,6 +6,8 @@
 Description:
 Configurable Npcs appear in static positions around the map, when you kill them, they drop items, such as piñatas.
 
+https://github.com/gamehunt/CustomNPCs is a dependency.
+
 Permissions for commands:
 - lootorial.point
 - lootorial.main
