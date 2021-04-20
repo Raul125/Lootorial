@@ -115,6 +115,7 @@ namespace Lootorial
             }
         }
 
+        // Why im not using command system? I don't think this plugin is going to be used by many people, so I'm not going to complicate my life.
         public void OnSendingRemoteAdminCommand(SendingRemoteAdminCommandEventArgs ev)
         {
             if (ev.Name == "lt" || ev.Name == "lootorial")
