@@ -3,24 +3,23 @@
 <a href="https://github.com/Raul125/Lootorial/releases"><img src="https://img.shields.io/github/v/release/Raul125/Lootorial?include_prereleases&label=Release" alt="Releases"></a>
 <a href="https://github.com/Raul125/Lootorial/releases"><img src="https://img.shields.io/github/downloads/Raul125/Lootorial/total?label=Downloads" alt="Downloads"></a>
 
-Description:
-Configurable Npcs appear in static positions around the map, when you kill them, they drop items, such as piñatas.
+Configurable NPCs appear in static positions around the map. When you kill them, they drop items, similar to piñatas.
 
-https://github.com/gamehunt/CustomNPCs is a dependency.
+[CustomNPCs plugin](https://github.com/gamehunt/CustomNPCs) is a dependency.
 
-Permissions for commands:
+## Permissions for commands:
 - lootorial.point
 - lootorial.main
 - lootorial.spawn
 
-Commands:
+## Commands:
 - `lt point`
-  - Description: It gives you your current position, rotation and room name. This is usefull for adding new pinhatas positions in the config.
+  - Description: Provides your current position, rotation, and room name. This is useful for adding new piñata positions in the config.
 
 - `lt spawn`
   - Usage: `lt spawn Name RoleType Health`
   - Example: `lt spawn Pinhata Tutorial 100`
-  - Description: With this command, you can spawn a pinhata in your current position.
+  - Description: Spawns a piñata at your current position.
 
 Default Config:
 ```yaml
